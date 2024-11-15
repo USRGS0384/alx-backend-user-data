@@ -44,4 +44,4 @@ def auth_session_login():
     response = jsonify(user.to_json())
     session_name = getenv('SESSION_NAME')
     response.set_cookie(session_name, session_id)
-    return response`
+    return response
