@@ -11,6 +11,7 @@ Base = declarative_base()
 
 # Define the User model
 
+
 class User(Base):
     """
     SQLAlchemy model for the 'users' table.
@@ -24,6 +25,7 @@ class User(Base):
     reset_token = Column(String, nullable=True)
 
 # Example usage: setting up a SQLite database
+
 
 def main():
     # Create the database engine (replace SQLite with your DB URI if needed)
@@ -50,11 +52,13 @@ def main():
     users = session.query(User).all()
     for user in users:
 
-        print(f"ID: {user.id}, Email: {user.email}, Password: {user.hashed_password}")
+        print(
+                f"ID: {user.id}, Email: {user.email}, 
+                Password: {user.hashed_password}")
 
     # Close the session
     session.close()
 
 
 if __name__ == "__main__":
-    main()
+   main()
