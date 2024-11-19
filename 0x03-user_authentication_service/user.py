@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 # Define the User model
+
 class User(Base):
     """
     SQLAlchemy model for the 'users' table.
@@ -47,10 +48,12 @@ def main():
     # Query and print users
     users = session.query(User).all()
     for user in users:
+
         print(f"ID: {user.id}, Email: {user.email}, Password: {user.hashed_password}")
 
     # Close the session
     session.close()
+
 
 if __name__ == "__main__":
     main()
