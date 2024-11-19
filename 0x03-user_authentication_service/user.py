@@ -24,6 +24,7 @@ class User(Base):
     reset_token = Column(String, nullable=True)
 
 # Example usage: setting up a SQLite database
+
 def main():
     # Create the database engine (replace SQLite with your DB URI if needed)
     engine = create_engine('sqlite:///users.db', echo=True)
