@@ -41,7 +41,8 @@ def main():
     users = session.query(User).all()
     for user in users:
         print(
-            f"ID: {user.id}, Email: {user.email}, Password: {user.hashed_password}"
+         f"ID: {user.id}, Email: {user.email},
+         Password: {user.hashed_password}"
         )
 
     print("Finished processing")  # Indentation fixed for this line
