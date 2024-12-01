@@ -3,7 +3,7 @@
 Basic flask application for User Authentication Service
 """
 from auth import Auth
-from flask import Flask, jsonify, request, abort, redirect
+from flask import Flask, jsonify, request, abort, redirect, make_response
 from sqlalchemy.orm.exc import NoResultFound
 
 app = Flask(__name__)
@@ -53,22 +53,30 @@ def login():
         abort(401)
 
 
-@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+@app.route('/sessions', methods=['DELETE'])
 def logout():
-    """Logout user
-    """
-    session_id = request.cookies.get('session_id', None)
+    """Logout the user and destroy their session."""
+    session_id = request.cookies.get('session_id')
+    if not session_id:
+        app.logger.debug("No session_id in cookies")
+        return abort(403)
 
-    if session_id is None:
-        abort(403)
+    # Find the session in the database
+    session = Session.find_by_session_id(session_id)
+    app.logger.debug(f"Session ID: {session_id}, Session: {session}")
 
-    user = AUTH.get_user_from_session_id(session_id)
+    if session is None:
+        app.logger.debug("Session not found")
+        return abort(403)
 
-    if user:
-        AUTH.destroy_session(user.id)
-        return redirect('/')
-    else:
-        abort(403)
+    # Delete the session
+    session.delete()
+    app.logger.debug("Session deleted successfully")
+
+    # Redirect to home
+    response = make_response(redirect('/'))
+    response.delete_cookie('session_id')
+    return response
 
 
 @app.route('/profile', strict_slashes=False)
