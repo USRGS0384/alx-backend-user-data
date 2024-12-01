@@ -59,7 +59,7 @@ def logout():
     session_id = request.cookies.get('session_id')
     if not session_id:
         app.logger.debug("No session_id in cookies")
-        return abort(403)
+        abort(403)  # Forbidden
 
     # Find the session in the database
     session = Session.find_by_session_id(session_id)
@@ -67,15 +67,19 @@ def logout():
 
     if session is None:
         app.logger.debug("Session not found")
-        return abort(403)
+        abort(403)  # Forbidden
 
-    # Delete the session
-    session.delete()
-    app.logger.debug("Session deleted successfully")
+    try:
+        # Delete the session
+        session.delete()
+        app.logger.debug("Session deleted successfully")
+    except Exception as e:
+        app.logger.error(f"Error deleting session: {e}")
+        abort(500)  # Internal Server Error
 
-    # Redirect to home
+    # Prepare the response with a redirection to '/'
     response = make_response(redirect('/'))
-    response.delete_cookie('session_id')
+    response.delete_cookie('session_id')  # Clear the session_id cookie
     return response
 
 
@@ -132,4 +136,4 @@ def update_password():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port=5000, debug=True)
